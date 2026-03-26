@@ -4,7 +4,7 @@ import vlc
 import time
 
 
-def play_video(filename):
+def play_video(filename,fullscreen=True):
     # Create an instance
     instance = vlc.Instance()
 
@@ -18,11 +18,23 @@ def play_video(filename):
     # Play the video
     player.play()
 
+    if fullscreen:
+        # Give VLC a moment to initialize the window before switching to fullscreen
+        time.sleep(0.5)
+        player.set_fullscreen(True)
+
     # Wait for video to finish (optional)
     while player.get_state() != vlc.State.Ended:
         time.sleep(0.5)
     print("Playback finished")
 
+    # To close the window: Stop playback and release resources
+    player.stop() 
+    del player
+    del media
+    del instance
+    
+    print("Window closed.")
 
 
 
