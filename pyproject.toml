@@ -1,0 +1,16 @@
+[project]
+name = "rpi_motion"
+version = "0.1"
+description = "Program for bruk av PIR-sensor på Raspberry Pi
+authors = [
+  {name="Harald G Svendsen"}
+  ]
+license = { text = "MIT" }
+readme = "README.md"
+
+requires-python = ">=3.12"
+dependencies = [
+    gpiozero
+    
+    ]
+
