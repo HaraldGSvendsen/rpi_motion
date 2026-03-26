@@ -1,16 +1,14 @@
 [project]
 name = "rpi_motion"
-version = "0.1"
-description = "Program for bruk av PIR-sensor på Raspberry Pi
+version = "0.1.0"
+description = "Program for bruk av PIR-sensor på Raspberry Pi"
 authors = [
-  {name="Harald G Svendsen"}
-  ]
-license = { text = "MIT" }
+    {name = "Harald G Svendsen"}
+]
+license = {text = "MIT"}
 readme = "README.md"
-
 requires-python = ">=3.12"
 dependencies = [
     "python-vlc>=3.0.0",
-    gpiozero,
-  ]
-
+    "gpiozero",
+]
