@@ -9,10 +9,10 @@ def play_video(filename):
     instance = vlc.Instance()
 
     # Create a media player
-    player = instance.media_player_new(filename)
+    player = instance.media_player_new()
 
     # Load the video file
-    media = instance.media_new()
+    media = instance.media_new(filename)
     player.set_media(media)
 
     # Play the video
@@ -30,7 +30,7 @@ pir = MotionSensor(18)
 
 def motion_function():
     print("BEVEGELSE!")
-    play_video('/home/harald/test.mp4')
+    play_video("/home/harald/test.mp4")
 
 def no_motion_function():
     print("stopp")
