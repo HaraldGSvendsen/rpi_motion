@@ -76,7 +76,7 @@ pir = MotionSensor(18)
 def motion_function():
     print("BEVEGELSE!")
     video_file = find_random_file("/home/harald/Videos",filetype="mp4")
-    play_video(video_file,fullscreen=False)
+    play_video(video_file,fullscreen=True)
 
 def no_motion_function():
     print("stopp")
