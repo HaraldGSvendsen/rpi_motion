@@ -34,7 +34,7 @@ def find_random_file(folder_path="movies/",filetype="mp4"):
         return None
     
     # Select a random file
-    random_file = random.choice(mp4_files)
+    random_file = random.choice(all_files)
     return random_file
 
 
