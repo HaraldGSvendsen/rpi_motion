@@ -12,3 +12,5 @@ Program for Raspberry Pi to play a random video file from a specified folder whe
 - start the service (without rebooting): `sudo systemctl start rpi_motion.service`
 
 - disable automatic start of service: `sudo systemctl disable rpi_motion.service`
+
+- view logs: `sudo journalctl -u rpi_motion.service -f`
