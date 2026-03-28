@@ -1,0 +1,22 @@
+# Harald: Modify if necessary, and copy this file to /etc/systemd/system/
+# See README.md
+
+[Unit]
+Description=Harald: Play on motion
+After=network.target
+
+[Service]
+User=harald
+WorkingDirectory=/home/harald/code/rpi_motion
+ExecStart=/home/harald/code/rpi_motion/env/bin/python /home/harald/code/rpi_motion/src/rpi_motion/play_on_motion.py
+
+# Restart policy: always restart if the process exits (crashes)
+Restart=always
+RestartSec=5
+
+# Optional: Capture logs to a file or journal
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
