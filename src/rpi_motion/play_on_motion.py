@@ -5,6 +5,7 @@ import time
 import pathlib
 import random
 import logging
+import sys
 
 # Configure logging to stdout (which systemd captures)
 logging.basicConfig(
