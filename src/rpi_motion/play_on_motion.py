@@ -4,7 +4,19 @@ import vlc
 import time
 import pathlib
 import random
+import logging
 
+# Configure logging to stdout (which systemd captures)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout) # Sends to systemd journal
+    ]
+)
+
+
+logger = logging.getLogger(__name__)
 
 def find_random_file(folder_path="movies/",filetype="mp4"):
     """
@@ -21,7 +33,7 @@ def find_random_file(folder_path="movies/",filetype="mp4"):
     
     # Check if folder exists
     if not folder.exists():
-        print(f"Error: Folder '{folder_path}' does not exist")
+        logger.error(f"Error: Folder '{folder_path}' does not exist")
         return None
     
     all_files = list(folder.glob(f"*.{filetype}"))
@@ -30,7 +42,7 @@ def find_random_file(folder_path="movies/",filetype="mp4"):
     all_files = sorted(set(all_files))
     
     if not all_files:
-        print(f"No .{filetype} files found in '{folder_path}'")
+        logger.warn(f"No .{filetype} files found in '{folder_path}'")
         return None
     
     # Select a random file
@@ -60,7 +72,7 @@ def play_video(filename,fullscreen=True):
     # Wait for video to finish (optional)
     while player.get_state() != vlc.State.Ended:
         time.sleep(0.5)
-    print("Playback finished")
+    #logger.info("Playback finished")
 
     # To close the window: Stop playback and release resources
     player.stop() 
@@ -74,12 +86,12 @@ def play_video(filename,fullscreen=True):
 pir = MotionSensor(18)
 
 def motion_function():
-    print("BEVEGELSE!")
+    logger.info("BEVEGELSE!")
     video_file = find_random_file("/home/harald/Videos",filetype="mp4")
     play_video(video_file,fullscreen=True)
 
 def no_motion_function():
-    print("stopp")
+    logger.info("stopp")
 
 pir.when_motion = motion_function
 pir.when_no_motion = no_motion_function

@@ -14,3 +14,11 @@ Program for Raspberry Pi to play a random video file from a specified folder whe
 - disable automatic start of service: `sudo systemctl disable rpi_motion.service`
 
 - view logs: `sudo journalctl -u rpi_motion.service -f`
+
+## Make video work when run as a service
+Summary Checklist for Your Service File
+- User: Set to pi (or your desktop user).
+- Target: `After=graphical.target` and `Requires=graphical.target`.
+- Env: `Environment="DISPLAY=:0"`.
+- Permissions: Ensure user is in video group (`sudo usermod -aG video pi`).
+- Player: Use a hardware-accelerated player (mpv or vlc).
