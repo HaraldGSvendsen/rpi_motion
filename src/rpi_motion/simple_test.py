@@ -2,6 +2,40 @@ from gpiozero import MotionSensor
 from signal import pause
 import vlc
 import time
+import pathlib
+import random
+
+
+def find_random_file(folder_path="movies/",filetype="mp4"):
+    """
+    Find all .mp4 files in the specified folder and return a random one.
+    
+    Args:
+        folder_path: Path to the folder containing video files
+        
+    Returns:
+        Path object of a random mp4 file, or None if no files found
+    """
+    # Create Path object for the folder
+    folder = pathlib.Path(folder_path)
+    
+    # Check if folder exists
+    if not folder.exists():
+        print(f"Error: Folder '{folder_path}' does not exist")
+        return None
+    
+    all_files = list(folder.glob(f"*.{filetype}"))
+
+    # Remove duplicates and sort for consistency
+    all_files = sorted(set(all_files))
+    
+    if not all_files:
+        print(f"No .{filetype} files found in '{folder_path}'")
+        return None
+    
+    # Select a random file
+    random_file = random.choice(mp4_files)
+    return random_file
 
 
 def play_video(filename,fullscreen=True):
@@ -33,16 +67,16 @@ def play_video(filename,fullscreen=True):
     del player
     del media
     del instance
-    
-    print("Window closed.")
 
 
 
+# MAIN SCRIPT -------------------------------
 pir = MotionSensor(18)
 
 def motion_function():
     print("BEVEGELSE!")
-    play_video("/home/harald/test.mp4")
+    video_file = find_random_file("/home/harald/Videos",filetype="mp4")
+    play_video(video_file,fullscreen=False)
 
 def no_motion_function():
     print("stopp")
