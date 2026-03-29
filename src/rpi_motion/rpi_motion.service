@@ -10,6 +10,7 @@ Requires=graphical.target
 [Service]
 User=harald
 Environment="DISPLAY=:0"
+ExecStartPre=/bin/sleep 10
 WorkingDirectory=/home/harald/code/rpi_motion
 ExecStart=/home/harald/code/rpi_motion/env/bin/python /home/harald/code/rpi_motion/src/rpi_motion/play_on_motion.py
 
