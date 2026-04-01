@@ -1,0 +1,24 @@
+# Version with RPi without GUI (kiosk mode)
+#
+# sudo systemctl daemon-reexec
+# sudo systemctl daemon-reload
+# sudo systemctl rpi_motion_console.service
+
+[Unit]
+Description=Harald: Play on motion kiosk
+After=multi-user.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStartPre=/bin/sleep 10
+WorkingDirectory=/home/harald/code/rpi_motion
+ExecStart=/home/harald/code/rpi_motion/env/bin/python /home/harald/code/rpi_motion/src/rpi_motion/play_on_motion_console.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
