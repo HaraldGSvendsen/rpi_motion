@@ -9,6 +9,18 @@ import os
 from gpiozero import MotionSensor
 
 # -----------------------------
+# Logging
+# -----------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger(__name__)
+
+logger.info("Starting python script.")
+
+# -----------------------------
 # Configuration
 # -----------------------------
 VIDEO_FOLDER = "/home/harald/Videos"
@@ -21,18 +33,10 @@ POLL_INTERVAL = 0.1   # loop sleep interval
 # -----------------------------
 # Environment for framebuffer
 # -----------------------------
-os.putenv('SDL_VIDEODRIVER', 'fbcon')  # framebuffer console
-os.putenv('SDL_FBDEV', '/dev/fb0')
+# In .service file instead
+#os.putenv('SDL_VIDEODRIVER', 'fbcon')  # framebuffer console
+#os.putenv('SDL_FBDEV', '/dev/fb0')
 
-# -----------------------------
-# Logging
-# -----------------------------
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler(sys.stdout)]
-)
-logger = logging.getLogger(__name__)
 
 # -----------------------------
 # Motion setup

@@ -1,8 +1,9 @@
 # Version with RPi without GUI (kiosk mode)
 #
-# sudo systemctl daemon-reexec
 # sudo systemctl daemon-reload
-# sudo systemctl rpi_motion_console.service
+# sudo systemctl enable rpi_motion_console.service
+# sudo systemctl start rpi_motion_console.service
+# sudo systemctl status rpi_motion_console.service
 
 [Unit]
 Description=Harald: Play on motion kiosk
