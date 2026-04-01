@@ -82,7 +82,7 @@ try:
     instance = vlc.Instance(options)
     player = instance.media_player_new()
 
-    motion_counter = 0
+    global motion_counter = 0
 
 
 
@@ -91,7 +91,7 @@ try:
         pass
 
     def motion_function():
-        nonlocal motion_counter
+        global motion_counter
         try:
             logger.info("Motion detected! Playing video...")
             video_file = video_list[motion_function.counter]
@@ -107,7 +107,7 @@ try:
             while player.get_state() != vlc.State.Ended:
                 time.sleep(0.5)
             player.stop()
-             
+
         except Exception as e:
             logger.error(f"Error playing video {video_file}: {str(e)}")
             # Reset counter on error to avoid getting stuck
