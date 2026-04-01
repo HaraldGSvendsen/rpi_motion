@@ -66,7 +66,7 @@ def play_video(video_file):
 def show_idle_image():
     logger.info("Showing idle image")
     return subprocess.Popen([
-        "sudo", "fbi",
+        "fbi",
         "-T", "1",
         "-noverbose",
         "-a",
