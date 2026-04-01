@@ -59,14 +59,14 @@ def main():
                     
                     cmd = [
                         "mpv",
-                        "--fs",
-                        "--hwdec", "auto",           # Hardware decoding
-                        "--vo", "drm",               # REQUIRED for text mode
-                        "--profile=fast",            # Performance optimization
-                        "--vd-lavc-threads", "1",    # Reduce threading overhead
-                        "--ao", "alsa",              # Stable audio backend
-                        "--audio-sync", "drop",      # Fix desync
-                        "--sync", "audio",           # Sync to audio clock
+                        "--fs",                      # No value, no equals
+                        "--hwdec=auto",              # Value attached with =
+                        "--vo=drm",                  # Value attached with = (Fixes your error)
+                        "--profile=fast",            # Value attached with =
+                        "--vd-lavc-threads=1",       # Value attached with =
+                        "--ao=alsa",                 # Value attached with =
+                        "--audio-sync=drop",         # Value attached with =
+                        "--sync=audio",              # Value attached with =
                         str(video_file)
                     ]
 #                        "mpv",
