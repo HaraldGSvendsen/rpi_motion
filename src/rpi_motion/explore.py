@@ -75,7 +75,7 @@ try:
     # fullscreen: Force fullscreen mode
     options = [
         '--avcodec-hw=v4l2m2m', 
-        '--vout=fb', 
+        '--vout=fbo', 
         '--fullscreen',
         '--no-video-title-show'
     ]    
