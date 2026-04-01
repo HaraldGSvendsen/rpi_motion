@@ -59,14 +59,13 @@ def main():
                     
                     cmd = [
                         "mpv",
-                        "--fs",                      # No value, no equals
-                        "--hwdec=auto",              # Value attached with =
-                        "--vo=drm",                  # Value attached with = (Fixes your error)
-                        "--profile=fast",            # Value attached with =
-                        "--vd-lavc-threads=1",       # Value attached with =
-                        "--ao=alsa",                 # Value attached with =
-                        "--audio-sync=drop",         # Value attached with =
-                        "--sync=audio",              # Value attached with =
+                        "--fs", 
+                        "--hwdec=auto", 
+                        "--vo=drm",  
+                        "--profile=fast",   
+                        "--vd-lavc-threads=1",  
+                        "--ao=alsa", 
+                        "--sync=audio", 
                         str(video_file)
                     ]
 #                        "mpv",
