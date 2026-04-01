@@ -54,7 +54,8 @@ def get_videos(folder_path=VIDEO_FOLDER, ext=VIDEO_EXT):
 
 def play_video(video_file):
     logger.info(f"Playing video: {video_file.name}")
-    subprocess.run([
+    # Non-blocking VLC process
+    return subprocess.Popen([
         "cvlc",
         "--fullscreen",
         "--no-osd",
@@ -88,7 +89,7 @@ def main():
 
     try:
         while True:
-            # Wait for motion before playing first video
+            # Wait for motion to start first video
             while last_motion_time == 0:
                 time.sleep(POLL_INTERVAL)
 
@@ -99,18 +100,25 @@ def main():
                 idle_proc = None
 
             video_file = video_list[counter]
-            play_video(video_file)
+            video_proc = play_video(video_file)
+            video_start_time = time.time()
 
-            # Decide next step after video finishes
-            if time.time() - last_motion_time <= VIDEO_END_BUFFER:
-                # Motion detected in last 5s → play next video immediately
+            # Monitor video while updating motion detection
+            while video_proc.poll() is None:  # video still playing
+                time.sleep(POLL_INTERVAL)
+                # last_motion_time is updated by PIR callbacks in real-time
+
+            video_end_time = time.time()
+
+            # Check if motion occurred during last VIDEO_END_BUFFER seconds of the video
+            if last_motion_time >= (video_end_time - VIDEO_END_BUFFER):
+                logger.info("Motion in last 5s → queue next video")
                 counter = (counter + 1) % len(video_list)
-                continue  # loop back to play next video
+                continue  # play next video immediately
             else:
                 # No recent motion → show idle image
                 idle_proc = show_idle_image()
-                # Wait until motion is detected
-                while time.time() - last_motion_time > VIDEO_END_BUFFER:
+                while last_motion_time < (time.time() - VIDEO_END_BUFFER):
                     time.sleep(POLL_INTERVAL)
                 # Kill idle image when motion detected
                 if idle_proc:
@@ -124,7 +132,7 @@ def main():
     except KeyboardInterrupt:
         logger.info("Exiting...")
     finally:
-        # Ensure VLC and fbi are cleaned up
+        # Cleanup VLC and fbi processes
         logger.info("Cleaning up processes...")
         subprocess.run(["pkill", "-f", "cvlc"], check=False)
         subprocess.run(["pkill", "-f", "fbi"], check=False)
