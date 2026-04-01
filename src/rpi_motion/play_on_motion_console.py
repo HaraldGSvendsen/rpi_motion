@@ -60,13 +60,24 @@ def main():
                     cmd = [
                         "mpv",
                         "--fs",
-                        "--hwdec=auto", # v4l2m2m or auto
-                        "--profile=fast",
-                        #"--vo=drm",
-                        #"--gpu-api=opengl",
-                        #"--gpu-context=wayland",
+                        "--hwdec", "auto",           # Hardware decoding
+                        "--vo", "drm",               # REQUIRED for text mode
+                        "--profile=fast",            # Performance optimization
+                        "--vd-lavc-threads", "1",    # Reduce threading overhead
+                        "--ao", "alsa",              # Stable audio backend
+                        "--audio-sync", "drop",      # Fix desync
+                        "--sync", "audio",           # Sync to audio clock
                         str(video_file)
                     ]
+#                        "mpv",
+#                        "--fs",
+#                        "--hwdec=auto", # v4l2m2m or auto
+#                        "--profile=fast",
+#                        "--vo=drm",
+#                        #"--gpu-api=opengl",
+#                        #"--gpu-context=wayland",
+#                        str(video_file)
+#                    ]
                     
                     # Run mpv
                     subprocess.run(cmd)
