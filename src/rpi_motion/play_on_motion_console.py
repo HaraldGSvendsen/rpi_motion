@@ -4,8 +4,13 @@ import pathlib
 import logging
 import sys
 import subprocess
-import pygame
+
+# In .service file instead - this is needed before pygame
 import os
+os.putenv('SDL_VIDEODRIVER', 'fbcon')  # framebuffer console
+os.putenv('SDL_FBDEV', '/dev/fb0')
+
+import pygame
 from gpiozero import MotionSensor
 
 # -----------------------------
@@ -30,12 +35,6 @@ PIR_PIN = 18
 VIDEO_END_BUFFER = 5  # seconds before video end to queue next
 POLL_INTERVAL = 0.1   # loop sleep interval
 
-# -----------------------------
-# Environment for framebuffer
-# -----------------------------
-# In .service file instead
-#os.putenv('SDL_VIDEODRIVER', 'fbcon')  # framebuffer console
-#os.putenv('SDL_FBDEV', '/dev/fb0')
 
 
 # -----------------------------
