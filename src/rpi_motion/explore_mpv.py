@@ -86,10 +86,8 @@ def main():
                     cmd = [
                         "mpv",
                         "--fs",
-                        "--no-osd",
                         "--hwdec", "auto",
                         "--vo", "drm",
-                        "--profile", "fast",
                         str(video_file)
                     ]
                     
