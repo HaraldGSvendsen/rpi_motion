@@ -83,7 +83,7 @@ def play_next_video():
     subprocess.run([
         "cvlc",
         "--fullscreen",
-        "--vout", "fb",  # to get smooth transition from idle image
+        "--vout","mmal",  # to get smooth transition from idle image
         "--no-osd",
         "--play-and-exit",
         str(video_file)
