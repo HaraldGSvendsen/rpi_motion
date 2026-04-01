@@ -14,7 +14,7 @@ Type=simple
 User=harald
 # ExecStartPre=/bin/sleep 10
 WorkingDirectory=/home/harald/code/rpi_motion
-ExecStart=/home/harald/code/rpi_motion/env/bin/python /home/harald/code/rpi_motion/src/rpi_motion/play_on_motion_console.py
+ExecStart=/home/harald/code/rpi_motion/env/bin/python -u /home/harald/code/rpi_motion/src/rpi_motion/play_on_motion_console.py
 Restart=always
 RestartSec=5
 TTYPath=/dev/tty1
@@ -22,7 +22,6 @@ StandardInput=tty
 StandardOutput=journal
 StandardError=journal
 
-# Environment for SDL / framebuffer
 Environment="SDL_VIDEODRIVER=fbcon"
 Environment="SDL_FBDEV=/dev/fb0"
 
