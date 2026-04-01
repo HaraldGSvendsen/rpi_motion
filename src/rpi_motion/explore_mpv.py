@@ -61,8 +61,8 @@ def main():
                         "mpv",
                         "--fs",
                         "--hwdec=auto",
-                        "--vo=gpu",
-                        "--gpu-context=wayland",
+                        #"--vo=gpu",
+                        #"--gpu-context=wayland",
                         str(video_file)
                     ]
                     
