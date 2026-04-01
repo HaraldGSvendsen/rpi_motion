@@ -58,27 +58,10 @@ def main():
                     logger.info(f"Playing: {video_file.name}")
                     
                     cmd = [
-                        "mpv",
-                        "--fs", 
-                        "--hwdec=auto", 
-                        "--vo=drm",  
-                        "--framedrop=decoder",      # Drop frames if we fall behind (prevents slow-mo)
-                        #"--profile=fast",   
-                        "--vd-lavc-threads=1",  
-                        "--ao=alsa", 
+                        "cvlc",
+                        "--fullscreen", 
                         str(video_file)
                     ]
-#                        "mpv",
-#                        "--fs",
-#                        "--hwdec=auto", # v4l2m2m or auto
-#                        "--profile=fast",
-#                        "--vo=drm",
-#                        #"--gpu-api=opengl",
-#                        #"--gpu-context=wayland",
-#                        str(video_file)
-#                    ]
-                    
-                    # Run mpv
                     subprocess.run(cmd)
                     
                     last_play_time = time.time()
