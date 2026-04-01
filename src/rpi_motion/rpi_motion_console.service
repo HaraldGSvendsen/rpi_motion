@@ -21,5 +21,9 @@ StandardInput=tty
 StandardOutput=journal
 StandardError=journal
 
+# Environment for SDL / framebuffer
+Environment="SDL_VIDEODRIVER=fbcon"
+Environment="SDL_FBDEV=/dev/fb0"
+
 [Install]
 WantedBy=multi-user.target
