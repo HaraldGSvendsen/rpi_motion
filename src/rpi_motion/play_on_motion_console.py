@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-import time
 import pathlib
 import logging
 import sys
 import subprocess
-
 from gpiozero import MotionSensor
+from signal import pause
 
+# ----- Logging -----
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -14,70 +14,102 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def get_videos(folder_path="/home/harald/Videos", filetype="mp4"):
+# ----- Config -----
+VIDEO_FOLDER = "/home/harald/Videos"
+VIDEO_TYPE = "mp4"
+PIR_PIN = 18
+IDLE_IMAGE = "/home/harald/Videos/idle.jpg"
+
+# ----- Load Videos -----
+def get_videos(folder_path=VIDEO_FOLDER, filetype=VIDEO_TYPE):
     folder = pathlib.Path(folder_path)
     if not folder.exists():
-        logger.error(f"Error: Folder '{folder_path}' does not exist")
+        logger.error(f"Folder '{folder_path}' does not exist")
         return None
-    
-    all_files = list(folder.glob(f"*.{filetype}"))
-    all_files = sorted(set(all_files))
-    
+    all_files = sorted(set(folder.glob(f"*.{filetype}")))
     if not all_files:
         logger.warning(f"No .{filetype} files found in '{folder_path}'")
         return None
-    
     return all_files
 
-def main():
-    pir = MotionSensor(18)
-    video_list = get_videos("/home/harald/Videos", filetype="mp4")
-    
-    if video_list is None:
-        logger.critical("No videos found. Exiting.")
-        sys.exit(1)
-    
-    logger.info(f"Found {len(video_list)} videos. Starting...")
-    
-    counter = 0
-    last_play_time = 0
-    is_playing = False
-    MIN_DELAY = 2
-    POLL_INTERVAL = 0.1
+video_list = get_videos()
+if video_list is None:
+    logger.critical("No videos found. Exiting.")
+    sys.exit(1)
 
-    try:
-        while True:
-            current_time = time.time()
-            
-            if pir.motion_detected and not is_playing:
-                if current_time - last_play_time >= MIN_DELAY:
-                    logger.info("Motion detected! Starting video...")
-                    is_playing = True
-                    
-                    video_file = video_list[counter]
-                    logger.info(f"Playing: {video_file.name}")
-                    
-                    cmd = [
-                        "cvlc",
-                        "--fullscreen", 
-                        "--play-and-exit",
-                        str(video_file)
-                    ]
-                    subprocess.run(cmd)
-                    
-                    last_play_time = time.time()
-                    counter = (counter + 1) % len(video_list)
-                    is_playing = False
-            
-            time.sleep(POLL_INTERVAL)
+video_counter = 0
+idle_proc = None
+video_playing = False  # flag to indicate a video is running
 
-    except KeyboardInterrupt:
-        logger.info("Exiting...")
-    finally:
-        # CRITICAL: Kill mpv if it's still running
-        logger.info("Cleaning up mpv...")
-        subprocess.run(["pkill", "-f", "mpv"], check=False)
-        logger.info("Done.")
+# ----- Functions -----
+def show_idle_image():
+    """Display the idle fullscreen image if no video is playing."""
+    global idle_proc, video_playing
+    if video_playing:
+        # Don't show image while video is running
+        return
+    if idle_proc:
+        idle_proc.terminate()
+        idle_proc.wait()
+    idle_proc = subprocess.Popen([
+        "sudo", "fbi",
+        "-T", "1",
+        "-noverbose",
+        "-a",
+        IDLE_IMAGE
+    ])
+    logger.info("Idle image displayed.")
 
-if __name__ == "__main__":
-    main()
+def play_next_video():
+    """Play next video fully, then return to idle image."""
+    global video_counter, idle_proc, video_playing
+    if video_playing:
+        # Already playing a video, ignore additional triggers
+        logger.info("Video already playing, ignoring motion.")
+        return
+
+    video_playing = True
+
+    # Kill idle image if running
+    if idle_proc:
+        idle_proc.terminate()
+        idle_proc.wait()
+        idle_proc = None
+
+    video_file = video_list[video_counter]
+    logger.info(f"Motion detected! Playing: {video_file.name}")
+
+    # Play video to the end
+    subprocess.run([
+        "cvlc",
+        "--fullscreen",
+        "--no-osd",
+        "--play-and-exit",
+        str(video_file)
+    ])
+
+    # Update counter
+    video_counter = (video_counter + 1) % len(video_list)
+    video_playing = False
+
+    # After video completes, show idle image
+    show_idle_image()
+
+# ----- Setup PIR -----
+pir = MotionSensor(PIR_PIN)
+pir.when_motion = play_next_video
+# No need to use when_no_motion here, image is only shown after video ends
+
+# ----- Main -----
+try:
+    show_idle_image()  # display image initially
+    pause()            # wait for PIR events
+except KeyboardInterrupt:
+    logger.info("Exiting...")
+finally:
+    # Cleanup
+    subprocess.run(["pkill", "-f", "cvlc"], check=False)
+    if idle_proc:
+        idle_proc.terminate()
+        idle_proc.wait()
+    logger.info("Cleanup complete.")
