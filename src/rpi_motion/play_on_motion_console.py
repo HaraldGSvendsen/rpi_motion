@@ -69,22 +69,23 @@ def play_next_video():
         return
 
     video_playing = True
+    video_file = video_list[video_counter]
+    logger.info(f"Motion detected! Playing: {video_file.name}")
 
     # Kill idle image if running
-    if idle_proc:
+    if False:
+    #if idle_proc:
         idle_proc.terminate()
         idle_proc.wait()
         idle_proc = None
 
-    video_file = video_list[video_counter]
-    logger.info(f"Motion detected! Playing: {video_file.name}")
+    #TODO: Avoid showing console in the transition from image to video
 
     # Play video to the end
     subprocess.run([
         "cvlc",
         "--fullscreen",
-        "--vout","mmal",  # to get smooth transition from idle image
-        "--no-osd",
+         "--no-osd",
         "--play-and-exit",
         str(video_file)
     ])
