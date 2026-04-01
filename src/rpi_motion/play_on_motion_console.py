@@ -60,7 +60,7 @@ def main():
                     cmd = [
                         "mpv",
                         "--fs",
-                        "--hwdec=rpi",
+                        "--hwdec=v4l2m2m", # or auto
                         "--vo=drm",
                         "--gpu-api=opengl",
                         #"--gpu-context=wayland",
