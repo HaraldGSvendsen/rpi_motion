@@ -61,7 +61,7 @@ def main():
                         "mpv",
                         "--fs",
                         "--hwdec=auto", # v4l2m2m or auto
-                        "profile=fast",
+                        "--profile=fast",
                         #"--vo=drm",
                         #"--gpu-api=opengl",
                         #"--gpu-context=wayland",
