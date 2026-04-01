@@ -62,7 +62,8 @@ def main():
                         "--fs", 
                         "--hwdec=auto", 
                         "--vo=drm",  
-                        "--profile=fast",   
+                        "--framedrop=decoder",      # Drop frames if we fall behind (prevents slow-mo)
+                        #"--profile=fast",   
                         "--vd-lavc-threads=1",  
                         "--ao=alsa", 
                         str(video_file)
