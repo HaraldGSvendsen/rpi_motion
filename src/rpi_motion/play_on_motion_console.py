@@ -18,6 +18,12 @@ VIDEO_END_BUFFER = 5  # seconds before video end to queue next
 POLL_INTERVAL = 0.1   # loop sleep interval
 
 # -----------------------------
+# Environment for framebuffer
+# -----------------------------
+os.putenv('SDL_VIDEODRIVER', 'fbcon')  # framebuffer console
+os.putenv('SDL_FBDEV', '/dev/fb0')
+
+# -----------------------------
 # Logging
 # -----------------------------
 logging.basicConfig(
@@ -78,6 +84,7 @@ def show_idle_image(screen):
     """Display idle image fullscreen with pygame"""
     try:
         image = pygame.image.load(IDLE_IMAGE)
+        image = pygame.transform.scale(image, screen.get_size())  # scale to fullscreen
         screen.blit(image, (0, 0))
         pygame.display.flip()
     except Exception as e:
