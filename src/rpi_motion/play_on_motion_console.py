@@ -5,6 +5,7 @@ import logging
 import sys
 import subprocess
 import pygame
+import os
 from gpiozero import MotionSensor
 
 # -----------------------------
