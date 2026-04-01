@@ -60,8 +60,8 @@ def main():
                     cmd = [
                         "mpv",
                         "--fs",
-                        "--hwdec", "auto",
-                        "--vo", "drm",
+                        "--hwdec=auto",
+                        "--vo=drm",
                         str(video_file)
                     ]
                     
