@@ -1,4 +1,5 @@
 from gpiozero import MotionSensor
+import signal
 from signal import pause
 import vlc
 import time
