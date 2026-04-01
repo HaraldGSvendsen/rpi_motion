@@ -65,7 +65,6 @@ def main():
                         "--profile=fast",   
                         "--vd-lavc-threads=1",  
                         "--ao=alsa", 
-                        "--sync=audio", 
                         str(video_file)
                     ]
 #                        "mpv",
