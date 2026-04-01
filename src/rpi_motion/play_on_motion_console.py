@@ -100,6 +100,7 @@ def main():
     # Initialize pygame framebuffer
     pygame.init()
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    logger.info(f"Showing image on screen: {screen}")
     show_idle_image(screen)
     #idle_proc = show_idle_image()  # show idle image initially
 
@@ -132,6 +133,7 @@ def main():
                 counter = (counter + 1) % len(video_list)
                 continue  # play next video immediately
             else:
+                logger.info("Showing image and waiting for motion.")
                 # No recent motion → show idle image and wait until motion
                 show_idle_image(screen)  # return to idle
                 #idle_proc = show_idle_image()
