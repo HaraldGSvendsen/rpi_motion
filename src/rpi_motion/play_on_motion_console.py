@@ -4,6 +4,7 @@ import pathlib
 import logging
 import sys
 import subprocess
+import pygame
 from gpiozero import MotionSensor
 
 # -----------------------------
@@ -63,7 +64,7 @@ def play_video(video_file):
         str(video_file)
     ])
 
-def show_idle_image():
+def OLD_show_idle_image():
     logger.info("Showing idle image")
     return subprocess.Popen([
         "fbi",
@@ -72,6 +73,16 @@ def show_idle_image():
         "-a",
         IDLE_IMAGE
     ])
+
+def show_idle_image(screen):
+    """Display idle image fullscreen with pygame"""
+    try:
+        image = pygame.image.load(IDLE_IMAGE)
+        screen.blit(image, (0, 0))
+        pygame.display.flip()
+    except Exception as e:
+        logger.error(f"Failed to load idle image: {e}")
+
 
 # -----------------------------
 # Main loop
@@ -85,7 +96,12 @@ def main():
 
     logger.info(f"Found {len(video_list)} videos")
     counter = 0
-    idle_proc = show_idle_image()  # show idle image initially
+
+    # Initialize pygame framebuffer
+    pygame.init()
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    show_idle_image(screen)
+    #idle_proc = show_idle_image()  # show idle image initially
 
     try:
         while True:
@@ -94,10 +110,10 @@ def main():
                 time.sleep(POLL_INTERVAL)
 
             # Kill idle image before video
-            if idle_proc:
-                idle_proc.terminate()
-                idle_proc.wait()
-                idle_proc = None
+            #if idle_proc:
+            #    idle_proc.terminate()
+            #    idle_proc.wait()
+            #    idle_proc = None
 
             video_file = video_list[counter]
             video_proc = play_video(video_file)
@@ -116,15 +132,16 @@ def main():
                 counter = (counter + 1) % len(video_list)
                 continue  # play next video immediately
             else:
-                # No recent motion → show idle image
-                idle_proc = show_idle_image()
+                # No recent motion → show idle image and wait until motion
+                show_idle_image(screen)  # return to idle
+                #idle_proc = show_idle_image()
                 while last_motion_time < (time.time() - VIDEO_END_BUFFER):
                     time.sleep(POLL_INTERVAL)
                 # Kill idle image when motion detected
-                if idle_proc:
-                    idle_proc.terminate()
-                    idle_proc.wait()
-                    idle_proc = None
+                #if idle_proc:
+                #    idle_proc.terminate()
+                #    idle_proc.wait()
+                #    idle_proc = None
 
             # Move to next video
             counter = (counter + 1) % len(video_list)
@@ -135,7 +152,7 @@ def main():
         # Cleanup VLC and fbi processes
         logger.info("Cleaning up processes...")
         subprocess.run(["pkill", "-f", "cvlc"], check=False)
-        subprocess.run(["pkill", "-f", "fbi"], check=False)
+        #subprocess.run(["pkill", "-f", "fbi"], check=False)
         logger.info("Done.")
 
 if __name__ == "__main__":
