@@ -45,34 +45,51 @@ try:
         logger.critical("No videos found or folder missing. Exiting.")
         sys.exit(1)
     
+    # Verify mpv is installed
+    try:
+        subprocess.run(["mpv", "--version"], capture_output=True, check=True)
+    except FileNotFoundError:
+        logger.critical("mpv is not installed. Please run: sudo apt install mpv")
+        sys.exit(1)
+    
     logger.info(f"Found {len(video_list)} videos. Starting motion detection...")
     
+    # Initialize function attributes
     motion_function.counter = 0
     motion_function.last_play_time = 0
+    motion_function.is_playing = False  # <-- NEW: Lock flag
     MIN_DELAY_BETWEEN_VIDEOS = 2
 
     def no_motion_function():
         pass
 
     def motion_function():
+        # Check if already playing (prevent recursion)
+        if motion_function.is_playing:
+            logger.debug("Motion ignored: video already playing")
+            return
+        
         current_time = time.time()
         
+        # Check cooldown period
         if current_time - motion_function.last_play_time < MIN_DELAY_BETWEEN_VIDEOS:
             logger.debug("Motion ignored: too soon after last video")
             return
-            
+        
+        # Set lock flag
+        motion_function.is_playing = True
+        
         try:
             video_file = video_list[motion_function.counter]
             logger.info(f"Motion detected! Playing: {video_file.name}")
             
-            # mpv command optimized for Pi 3B+ on Debian Trixie
             cmd = [
                 "mpv",
-                "--fs",              # Fullscreen
-                "--no-osd",          # No on-screen display
-                "--hwdec", "auto",   # Hardware decoding (tries all available)
-                "--vo", "drm",       # Direct Rendering Manager (bypasses X11/Wayland)
-                "--profile", "fast", # Optimize for performance
+                "--fs",
+                "--no-osd",
+                "--hwdec", "auto",
+                "--vo", "drm",
+                "--profile", "fast",
                 str(video_file)
             ]
             
@@ -89,6 +106,9 @@ try:
         except Exception as e:
             logger.error(f"Error playing video: {e}")
             motion_function.counter = 0
+        finally:
+            # Release lock flag (CRITICAL!)
+            motion_function.is_playing = False
 
     pir.when_motion = motion_function
     pir.when_no_motion = no_motion_function
