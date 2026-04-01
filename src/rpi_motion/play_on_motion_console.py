@@ -60,6 +60,7 @@ def main():
                     cmd = [
                         "cvlc",
                         "--fullscreen", 
+                        "--play-and-exit",
                         str(video_file)
                     ]
                     subprocess.run(cmd)
