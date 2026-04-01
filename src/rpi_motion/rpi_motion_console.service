@@ -8,6 +8,8 @@
 [Unit]
 Description=Harald: Play on motion kiosk
 After=multi-user.target
+After=systemd-user-sessions.service getty@tty1.service
+
 
 [Service]
 Type=simple
