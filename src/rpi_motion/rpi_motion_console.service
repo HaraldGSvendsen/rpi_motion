@@ -21,10 +21,10 @@ Restart=always
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
-TTYPath=/dev/tty1
-StandardInput=tty
-#Environment="SDL_VIDEODRIVER=fbcon"
-#Environment="SDL_FBDEV=/dev/fb0"
+#TTYPath=/dev/tty1
+#StandardInput=tty
+Environment="SDL_VIDEODRIVER=fbcon"
+Environment="SDL_FBDEV=/dev/fb0"
 
 [Install]
 WantedBy=multi-user.target
