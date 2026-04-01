@@ -82,7 +82,8 @@ try:
     instance = vlc.Instance(options)
     player = instance.media_player_new()
 
-    global motion_counter = 0
+    global motion_counter
+    motion_counter = 0
 
 
 
