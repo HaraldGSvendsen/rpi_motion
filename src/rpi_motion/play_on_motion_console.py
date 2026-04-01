@@ -73,8 +73,8 @@ def play_next_video():
     logger.info(f"Motion detected! Playing: {video_file.name}")
 
     # Kill idle image if running
-    if False:
-    #if idle_proc:
+    #if False:
+    if idle_proc:
         idle_proc.terminate()
         idle_proc.wait()
         idle_proc = None
