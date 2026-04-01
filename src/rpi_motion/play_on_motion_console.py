@@ -60,9 +60,10 @@ def main():
                     cmd = [
                         "mpv",
                         "--fs",
-                        "--hwdec=v4l2m2m", # or auto
-                        "--vo=drm",
-                        "--gpu-api=opengl",
+                        "--hwdec=auto", # v4l2m2m or auto
+                        "profile=fast",
+                        #"--vo=drm",
+                        #"--gpu-api=opengl",
                         #"--gpu-context=wayland",
                         str(video_file)
                     ]
