@@ -100,16 +100,6 @@ def show_idle_image():
         IDLE_IMAGE
     ]) 
 
-def FAILS_show_idle_image(screen):
-    """Display idle image fullscreen with pygame"""
-    try:
-        #image = pygame.image.load(IDLE_IMAGE)
-        #image = pygame.transform.scale(image, screen.get_size())  # scale to fullscreen
-        #screen.blit(image, (0, 0))
-        #pygame.display.flip()       
-    except Exception as e:
-        logger.error(f"Failed to load idle image: {e}")
-
 
 # -----------------------------
 # Main loop
@@ -124,11 +114,8 @@ def main():
     logger.info(f"Found {len(video_list)} videos")
     counter = 0
 
-    # Initialize pygame framebuffer
-    #pygame.init()
-    #screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN). #pygame.error: fbcon not available
+
     logger.info(f"Showing image on screen")
-    #show_idle_image(screen)
     idle_proc = show_idle_image()  # show idle image initially
 
     try:
