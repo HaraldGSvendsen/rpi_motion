@@ -84,21 +84,13 @@ def play_video(video_file):
 
 def show_idle_image():
     logger.info("Showing idle image")
-    #return subprocess.Popen([
-    #    "fbi",
-    #    "-T", "1",
-    #    "-noverbose",
-    #    "-a",
-    #    IDLE_IMAGE
-    #])
     return subprocess.Popen([
         "cvlc",
         "--fullscreen",
         "--no-video-title-show",
-        "--image-duration=-1",
-        "--loop", 
+        "--play-and-exit",
         IDLE_IMAGE
-    ]) 
+    ])
 
 
 # -----------------------------
