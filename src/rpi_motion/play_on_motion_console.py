@@ -149,8 +149,7 @@ def main():
             else:
                 logger.info("Showing image and waiting for motion.")
                 # No recent motion → show idle image and wait until motion
-                show_idle_image(screen)  # return to idle
-                #idle_proc = show_idle_image()
+                idle_proc = show_idle_image()
                 while last_motion_time < (time.time() - VIDEO_END_BUFFER):
                     time.sleep(POLL_INTERVAL)
                 # Kill idle image when motion detected
