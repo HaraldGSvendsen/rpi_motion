@@ -88,7 +88,8 @@ def show_idle_image():
         "cvlc",
         "--fullscreen",
         "--no-video-title-show",
-        "--play-and-exit",
+        #"--play-and-exit",
+        "--image-duration=86400",
         IDLE_IMAGE
     ])
 
