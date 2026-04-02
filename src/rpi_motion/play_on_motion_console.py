@@ -10,7 +10,14 @@ import os
 os.putenv('SDL_VIDEODRIVER', 'fbcon')  # framebuffer console
 os.putenv('SDL_FBDEV', '/dev/fb0')
 
-import pygame
+# TODO: Change pygame to 
+#subprocess.run([
+#    "cvlc",
+#    "--fullscreen",
+#    "--play-and-exit",
+#    "/path/to/video.mp4"
+#])
+
 from gpiozero import MotionSensor
 
 # -----------------------------
@@ -74,23 +81,32 @@ def play_video(video_file):
         str(video_file)
     ])
 
-def OLD_show_idle_image():
-    logger.info("Showing idle image")
-    return subprocess.Popen([
-        "fbi",
-        "-T", "1",
-        "-noverbose",
-        "-a",
-        IDLE_IMAGE
-    ])
 
-def show_idle_image(screen):
+def show_idle_image():
+    logger.info("Showing idle image")
+    #return subprocess.Popen([
+    #    "fbi",
+    #    "-T", "1",
+    #    "-noverbose",
+    #    "-a",
+    #    IDLE_IMAGE
+    #])
+    return subprocess.Popen([
+        "cvlc",
+        "--fullscreen",
+        "--no-video-title-show",
+        "--image-duration=-1",
+        "--loop", 
+        IDLE_IMAGE
+    ]) 
+
+def FAILS_show_idle_image(screen):
     """Display idle image fullscreen with pygame"""
     try:
-        image = pygame.image.load(IDLE_IMAGE)
-        image = pygame.transform.scale(image, screen.get_size())  # scale to fullscreen
-        screen.blit(image, (0, 0))
-        pygame.display.flip()
+        #image = pygame.image.load(IDLE_IMAGE)
+        #image = pygame.transform.scale(image, screen.get_size())  # scale to fullscreen
+        #screen.blit(image, (0, 0))
+        #pygame.display.flip()       
     except Exception as e:
         logger.error(f"Failed to load idle image: {e}")
 
@@ -109,11 +125,11 @@ def main():
     counter = 0
 
     # Initialize pygame framebuffer
-    pygame.init()
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    logger.info(f"Showing image on screen: {screen}")
-    show_idle_image(screen)
-    #idle_proc = show_idle_image()  # show idle image initially
+    #pygame.init()
+    #screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN). #pygame.error: fbcon not available
+    logger.info(f"Showing image on screen")
+    #show_idle_image(screen)
+    idle_proc = show_idle_image()  # show idle image initially
 
     try:
         while True:
@@ -122,10 +138,10 @@ def main():
                 time.sleep(POLL_INTERVAL)
 
             # Kill idle image before video
-            #if idle_proc:
-            #    idle_proc.terminate()
-            #    idle_proc.wait()
-            #    idle_proc = None
+            if idle_proc:
+                idle_proc.terminate()
+                idle_proc.wait()
+                idle_proc = None
 
             video_file = video_list[counter]
             video_proc = play_video(video_file)
@@ -151,10 +167,10 @@ def main():
                 while last_motion_time < (time.time() - VIDEO_END_BUFFER):
                     time.sleep(POLL_INTERVAL)
                 # Kill idle image when motion detected
-                #if idle_proc:
-                #    idle_proc.terminate()
-                #    idle_proc.wait()
-                #    idle_proc = None
+                if idle_proc:
+                    idle_proc.terminate()
+                    idle_proc.wait()
+                    idle_proc = None
 
             # Move to next video
             counter = (counter + 1) % len(video_list)
