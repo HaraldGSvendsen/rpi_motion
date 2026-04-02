@@ -4,20 +4,6 @@ import pathlib
 import logging
 import sys
 import subprocess
-
-# In .service file instead - this is needed before pygame
-import os
-os.putenv('SDL_VIDEODRIVER', 'fbcon')  # framebuffer console
-os.putenv('SDL_FBDEV', '/dev/fb0')
-
-# TODO: Change pygame to 
-#subprocess.run([
-#    "cvlc",
-#    "--fullscreen",
-#    "--play-and-exit",
-#    "/path/to/video.mp4"
-#])
-
 from gpiozero import MotionSensor
 
 # -----------------------------
@@ -29,7 +15,6 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)]
 )
 logger = logging.getLogger(__name__)
-
 logger.info("Starting python script.")
 
 # -----------------------------
@@ -140,7 +125,7 @@ def main():
                 counter = (counter + 1) % len(video_list)
                 continue  # play next video immediately
             else:
-                logger.info("Showing image and waiting for motion.")
+                logger.info("Showing image and waiting for motion detection.")
                 # No recent motion → show idle image and wait until motion
                 idle_proc = show_idle_image()
                 while last_motion_time < (time.time() - VIDEO_END_BUFFER):
@@ -157,10 +142,9 @@ def main():
     except KeyboardInterrupt:
         logger.info("Exiting...")
     finally:
-        # Cleanup VLC and fbi processes
+        # Cleanup VLC processes
         logger.info("Cleaning up processes...")
         subprocess.run(["pkill", "-f", "cvlc"], check=False)
-        #subprocess.run(["pkill", "-f", "fbi"], check=False)
         logger.info("Done.")
 
 if __name__ == "__main__":

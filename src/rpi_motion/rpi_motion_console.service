@@ -8,24 +8,18 @@
 [Unit]
 Description=Harald: Play on motion kiosk
 After=multi-user.target
-#After=systemd-user-sessions.service getty@tty1.service
 
 
 [Service]
 Type=simple
 User=harald
-# ExecStartPre=/bin/sleep 10
+ExecStartPre=/bin/sleep 10
 WorkingDirectory=/home/harald/code/rpi_motion
-ExecStart=/bin/bash -c 'chvt 1; exec /home/harald/code/rpi_motion/env/bin/python -u /home/harald/code/rpi_motion/src/rpi_motion/play_on_motion_console.py'
-#ExecStart=/home/harald/code/rpi_motion/env/bin/python -u /home/harald/code/rpi_motion/src/rpi_motion/play_on_motion_console.py
+ExecStart=/home/harald/code/rpi_motion/env/bin/python -u /home/harald/code/rpi_motion/src/rpi_motion/play_on_motion_console.py
 Restart=always
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
-#TTYPath=/dev/tty1
-#StandardInput=tty
-Environment="SDL_VIDEODRIVER=fbcon"
-Environment="SDL_FBDEV=/dev/fb0"
 
 [Install]
 WantedBy=multi-user.target
