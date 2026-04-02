@@ -67,18 +67,6 @@ def play_video(video_file):
     ])
 
 
-def show_idle_image():
-    logger.info("Showing idle image")
-    return subprocess.Popen([
-        "cvlc",
-        "--fullscreen",
-        "--no-video-title-show",
-        #"--play-and-exit",
-        "--image-duration=86400",
-        IDLE_IMAGE
-    ])
-
-
 # -----------------------------
 # Main loop
 # -----------------------------
@@ -92,21 +80,11 @@ def main():
     logger.info(f"Found {len(video_list)} videos")
     counter = 0
 
-
-    logger.info(f"Showing image on screen")
-    idle_proc = show_idle_image()  # show idle image initially
-
     try:
         while True:
             # Wait for motion to start first video
             while last_motion_time == 0:
                 time.sleep(POLL_INTERVAL)
-
-            # Kill idle image before video
-            if idle_proc:
-                idle_proc.terminate()
-                idle_proc.wait()
-                idle_proc = None
 
             video_file = video_list[counter]
             video_proc = play_video(video_file)
@@ -125,16 +103,10 @@ def main():
                 counter = (counter + 1) % len(video_list)
                 continue  # play next video immediately
             else:
-                logger.info("Showing image and waiting for motion detection.")
-                # No recent motion → show idle image and wait until motion
-                idle_proc = show_idle_image()
+                logger.info("Waiting for motion detection. No video output")
+                # No recent motion → wait until motion
                 while last_motion_time < (time.time() - VIDEO_END_BUFFER):
                     time.sleep(POLL_INTERVAL)
-                # Kill idle image when motion detected
-                if idle_proc:
-                    idle_proc.terminate()
-                    idle_proc.wait()
-                    idle_proc = None
 
             # Move to next video
             counter = (counter + 1) % len(video_list)
