@@ -59,9 +59,23 @@ It seems that a service playing videos with cvlc combined with  image displayed 
 
 trying to show the image from within the python script hasn't worked.
 
-with fbi from the terminal, the video seems to be played on top, and when the video ends, the image comes back. Exactly as wanted. 
+with fbi from the terminal, the video seems to be played on top, and when the video ends, the image comes back. Exactly as wanted:
 
-=>
-
-Add this to `.profile` to show the background image after boot (and user harald auto login):  
+So, add this to `.profile` to show the background image after boot (and user harald auto login):  
 `sudo fbi -T 1 -d /dev/fb0 -noverbose -a /home/harald/Videos/idle.jpg`
+
+### Selecting 3.5 analog audio output
+When using the console only setup, raspi-config fails when trying to select audio output (HDMI vs 3.5 analog)
+
+To fix that, create the file  `~/.asoundrc`  with the content:
+
+```
+pcm.!default {
+    type plug
+    slave.pcm "hw:1,0"
+}
+ctl.!default {
+    type hw
+    card 1
+}
+```
